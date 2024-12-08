@@ -49,6 +49,9 @@ static return_code_t interpret_char(unsigned char **current, const char c,
         case '~':
             **current = ~**current;
             break;
+        case '#':
+            printf("%d", **current);
+            break;
         case '!':
             return (EXIT);
         default:
