@@ -51,7 +51,7 @@ This will generate an executable named `brainfuck`.
 Execute the interpreter with the Brainfuck script file as an argument:
 
 ```bash
-./brainfuck <brainfuck_script.bf>
+./gabrain <brainfuck_script.bf>
 ```
 
 ### Cleaning Up
@@ -73,7 +73,7 @@ Consider the following Brainfuck script (`hello_world.bf`):
 Run it with:
 
 ```bash
-./brainfuck hello_world.bf
+./gabrain hello_world.bf
 ```
 
 ---
