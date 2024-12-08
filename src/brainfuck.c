@@ -34,6 +34,14 @@ static int interpret_char(unsigned char **current, const char c,
         case ',':
             **current = getchar();
             break;
+        case '^':
+            if (**current >= 'a' && **current <= 'z')
+                **current -= 32;
+            break;
+        case '_':
+            if (**current >= 'A' && **current <= 'Z')
+                **current += 32;
+            break;
         default:
             break;
     }
