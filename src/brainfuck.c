@@ -5,8 +5,10 @@
 #include <string.h>
 
 static return_code_t interpret_char(unsigned char **current, const char c,
-    unsigned char *memory_table, const size_t memory_size)
+    unsigned char *memory_table, const size_t memory_size, unsigned char *registred_value)
 {
+    unsigned char temp;
+
     switch (c) {
         case '>':
             if (*current >= memory_table + memory_size) {
@@ -52,6 +54,15 @@ static return_code_t interpret_char(unsigned char **current, const char c,
         case '#':
             printf("%d", **current);
             break;
+        case ':':
+            if (*registred_value == 0) {
+                *registred_value = **current;
+            } else {
+                temp = **current;
+                **current = *registred_value;
+                *registred_value = temp;
+            }
+            break;
         case '!':
             return (EXIT);
         default:
@@ -66,6 +77,7 @@ int interpret_brainfuck(const char *file_name)
     unsigned char *memory_table = calloc(memory_size, sizeof(unsigned char));
     char *program = NULL;
     unsigned char *current;
+    unsigned char registred_value = 0;
     size_t program_counter = 0;
     size_t program_length;
     return_code_t result;
@@ -83,7 +95,7 @@ int interpret_brainfuck(const char *file_name)
     }
     program_length = strlen(program);
     while (program_counter < program_length) {
-        result = interpret_char(&current, program[program_counter], memory_table, memory_size);
+        result = interpret_char(&current, program[program_counter], memory_table, memory_size, &registred_value);
         if (result == ERROR) {
             free(memory_table);
             free(program);

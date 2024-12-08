@@ -20,6 +20,7 @@ Welcome to the **Gabrain**, a robust and extended interpreter for the minimalist
   - `@`: Reset the byte at the data pointer to zero.
   - `~`: Perform a bitwise NOT operation on the byte at the data pointer.
   - `#`: Output the current value of the byte as an integer.
+  - `:`: Saves the current byte value to a temporary register if it is empty; otherwise, swaps the current byte value with the one stored in the register.
   - `!`: Exit the program immediately.
 
 - **Error Handling**:
