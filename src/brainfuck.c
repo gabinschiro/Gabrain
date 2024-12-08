@@ -42,7 +42,7 @@ static void free_interpreter(brainfuck_t *interpreter)
 
 int interpret_brainfuck(const char *file_name)
 {
-    brainfuck_t *interpreter = init_interpreter(30000, file_name);
+    brainfuck_t *interpreter = init_interpreter(MEMORY_SIZE, file_name);
 
     if (!interpreter)
         return (ERROR);
