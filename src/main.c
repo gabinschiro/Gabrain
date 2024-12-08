@@ -10,7 +10,7 @@ int main(const int argc, char **argv)
         return (1);
     }
     filename = argv[1];
-    if (interpret_brainfuck(filename)) {
+    if (!interpret_brainfuck(filename)) {
         printf("Error interpreting Brainfuck script.\n");
         return (1);
     }

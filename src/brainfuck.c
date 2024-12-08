@@ -1,111 +1,60 @@
 #include "brainfuck.h"
 #include "util.h"
+#include "command.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static return_code_t interpret_char(unsigned char **current, const char c,
-    unsigned char *memory_table, const size_t memory_size, unsigned char *registred_value)
+static brainfuck_t *init_interpreter(size_t memory_size, const char *program_file)
 {
-    unsigned char temp;
+    brainfuck_t *interpreter = malloc(sizeof(brainfuck_t));
 
-    switch (c) {
-        case '>':
-            if (*current >= memory_table + memory_size) {
-                fprintf(stderr, "Memory out of bounds.\n");
-                return (ERROR);
-            }
-            (*current)++;
-            break;
-        case '<':
-            if (*current <= memory_table) {
-                fprintf(stderr, "Memory out of bounds.\n");
-                return (ERROR);
-            }
-            (*current)--;
-            break;
-        case '+':
-            (**current)++;
-            break;
-        case '-':
-            (**current)--;
-            break;
-        case '.':
-            if (**current >= 32 && **current <= 126)
-                putchar(**current);
-            break;
-        case ',':
-            **current = getchar();
-            break;
-        case '^':
-            if (**current >= 'a' && **current <= 'z')
-                **current -= 32;
-            break;
-        case '_':
-            if (**current >= 'A' && **current <= 'Z')
-                **current += 32;
-            break;
-        case '@':
-            **current = 0;
-            break;
-        case '~':
-            **current = ~**current;
-            break;
-        case '#':
-            printf("%d", **current);
-            break;
-        case ':':
-            if (*registred_value == 0) {
-                *registred_value = **current;
-            } else {
-                temp = **current;
-                **current = *registred_value;
-                *registred_value = temp;
-            }
-            break;
-        case '!':
-            return (EXIT);
-        default:
-            break;
+    if (!interpreter) {
+        fprintf(stderr, "Failed to allocate memory for interpreter.\n");
+        return (NULL);
     }
-    return (SUCCESS);
+    interpreter->memory = calloc(memory_size, sizeof(unsigned char));
+    if (!interpreter->memory) {
+        fprintf(stderr, "Failed to allocate memory table.\n");
+        free(interpreter);
+        return (NULL);
+    }
+    interpreter->pointer = interpreter->memory;
+    interpreter->register_value = 0;
+    interpreter->memory_size = memory_size;
+    interpreter->program = load_program(program_file);
+    if (!interpreter->program) {
+        free(interpreter->memory);
+        free(interpreter);
+        return (NULL);
+    }
+    interpreter->program_counter = 0;
+    interpreter->program_length = strlen(interpreter->program);
+    return (interpreter);
+}
+
+static void free_interpreter(brainfuck_t *interpreter)
+{
+    free(interpreter->memory);
+    free(interpreter->program);
+    free(interpreter);
 }
 
 int interpret_brainfuck(const char *file_name)
 {
-    const size_t memory_size = 30000;
-    unsigned char *memory_table = calloc(memory_size, sizeof(unsigned char));
-    char *program = NULL;
-    unsigned char *current;
-    unsigned char registred_value = 0;
-    size_t program_counter = 0;
-    size_t program_length;
-    return_code_t result;
+    brainfuck_t *interpreter = init_interpreter(30000, file_name);
 
-    if (memory_table == NULL) {
-        fprintf(stderr, "Failed to allocate memory.\n");
-        return (1);
-    }
-    current = memory_table;
-    program = load_program(file_name);
-    if (program == NULL) {
-        fprintf(stderr, "Failed to load program.\n");
-        free(memory_table);
-        return (1);
-    }
-    program_length = strlen(program);
-    while (program_counter < program_length) {
-        result = interpret_char(&current, program[program_counter], memory_table, memory_size, &registred_value);
-        if (result == ERROR) {
-            free(memory_table);
-            free(program);
-            return (1);
+    if (!interpreter)
+        return (ERROR);
+    while (interpreter->program_counter < interpreter->program_length) {
+        char command = interpreter->program[interpreter->program_counter];
+        const return_code_t result = process_command(interpreter, command);
+        if (result == ERROR || result == EXIT) {
+            free_interpreter(interpreter);
+            return (result == ERROR ? ERROR : SUCCESS);
         }
-        if (result == EXIT)
-            break;
-        program_counter++;
+        interpreter->program_counter++;
     }
-    free(memory_table);
-    free(program);
-    return (0);
+    free_interpreter(interpreter);
+    return (SUCCESS);
 }
