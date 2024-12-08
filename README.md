@@ -93,6 +93,10 @@ Run it with:
 | `_`     | Converts uppercase ASCII letters to lowercase.         |
 | `@`     | Resets the byte at the data pointer to `0`.            |
 | `~`     | Applies a bitwise NOT operation to the byte.           |
+| `#`     | Outputs the current value of the byte as an integer.   |
+| `:`     | Saves the current byte value to a temporary register   |
+|         | if it is empty; otherwise, swaps the value with the    |
+|         | one stored in the register.                            |
 | `!`     | Exits the program immediately.                         |
 
 ---
