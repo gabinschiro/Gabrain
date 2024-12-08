@@ -66,6 +66,10 @@ return_code_t process_command(brainfuck_t *interpreter, char command)
                 interpreter->pointer++;
             }
             break;
+        case '|':
+            if (*interpreter->pointer + 97 < 123)
+                *interpreter->pointer = *interpreter->pointer + 123 - 26;
+            break;
         case '!':
             return (EXIT);
         default:
