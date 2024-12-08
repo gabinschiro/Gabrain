@@ -1,10 +1,13 @@
 #include "brainfuck.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main(const int argc, char **argv)
 {
     char *filename;
 
+    srand(time(NULL));
     if (argc < 2) {
         printf("Usage: %s <brainfuck_script.bf>\n", argv[0]);
         return (1);

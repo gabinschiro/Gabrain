@@ -21,6 +21,8 @@ Welcome to the **Gabrain**, a robust and extended interpreter for the minimalist
   - `~`: Perform a bitwise NOT operation on the byte at the data pointer.
   - `#`: Output the current value of the byte as an integer.
   - `:`: Saves the current byte value to a temporary register if it is empty; otherwise, swaps the current byte value with the one stored in the register.
+  - `?`: Set the byte at the data pointer to a random value between 0 and 255.
+  - `;`: Output the byte at the data pointer as a character continues until a cell containing the value 0 is encountered.
   - `!`: Exit the program immediately.
 
 - **Error Handling**:
@@ -97,6 +99,10 @@ Run it with:
 | `:`     | Saves the current byte value to a temporary register   |
 |         | if it is empty; otherwise, swaps the value with the    |
 |         | one stored in the register.                            |
+| `?`     | Sets the byte at the data pointer to a random value    |
+|         | between 0 and 255.                                     |
+| `;`     | Outputs the byte as a character and increments the     |
+|         | data pointer until a `0` is encountered.               |
 | `!`     | Exits the program immediately.                         |
 
 ---

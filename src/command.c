@@ -1,5 +1,6 @@
 #include "brainfuck.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 return_code_t process_command(brainfuck_t *interpreter, char command)
 {
@@ -54,6 +55,15 @@ return_code_t process_command(brainfuck_t *interpreter, char command)
                 unsigned char temp = *interpreter->pointer;
                 *interpreter->pointer = interpreter->register_value;
                 interpreter->register_value = temp;
+            }
+            break;
+        case '?':
+            *interpreter->pointer = rand() % 256;
+            break;
+        case ';':
+            while (*interpreter->pointer != 0) {
+                putchar((*interpreter->pointer >= 32 && *interpreter->pointer <= 126) ? *interpreter->pointer : '?');
+                interpreter->pointer++;
             }
             break;
         case '!':
